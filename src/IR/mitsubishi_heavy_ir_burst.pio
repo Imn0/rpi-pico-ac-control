@@ -1,0 +1,30 @@
+.program mitsubishi_heavy_ir_burst
+
+
+.define NUM_CYCLES 15                   ; how many carrier cycles to generate
+.define BURST_IRQ 7                  ; which IRQ should trigger a carrier burst
+.define public TICKS_PER_LOOP 62     ; the number of instructions in the loop (for timing)
+
+.wrap_target
+    set X, (NUM_CYCLES - 1)         
+    wait 1 irq BURST_IRQ            
+cycle_loop:
+    set pins, 1 [31]                 
+    set pins, 0 [30]                  
+    jmp X--, cycle_loop            
+.wrap
+
+
+% c-sdk {
+static inline void mitsubishi_heavy_ir_burst_program_init(PIO pio, uint sm, uint offset, uint pin, float freq) {
+    
+    pio_sm_config c = mitsubishi_heavy_ir_burst_program_get_default_config (offset);
+    sm_config_set_set_pins (&c, pin, 1);
+    pio_gpio_init (pio, pin);
+    pio_sm_set_consecutive_pindirs (pio, sm, pin, 1, true);
+    float div = (float) clock_get_hz(clk_sys) / (freq * mitsubishi_heavy_ir_burst_TICKS_PER_LOOP);
+    sm_config_set_clkdiv (&c, div);
+    pio_sm_init (pio, sm, offset, &c);
+    pio_sm_set_enabled (pio, sm, true);
+}
+%}

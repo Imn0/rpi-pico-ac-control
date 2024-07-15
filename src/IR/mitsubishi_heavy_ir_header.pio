@@ -1,0 +1,31 @@
+.program mitsubishi_heavy_ir_header
+.define BURST_IRQ 7                     
+.define DATA_IRQ 6                     
+.define START_IRQ 5                     
+.define NUM_INITIAL_BURSTS 10           
+
+.wrap_target
+    wait 1 irq START_IRQ
+    set X, (NUM_INITIAL_BURSTS - 1)     
+long_burst:
+    irq BURST_IRQ
+    jmp X-- long_burst
+    nop [9]
+    irq DATA_IRQ 
+.wrap                                   
+
+
+% c-sdk {
+static inline void mitsubishi_heavy_ir_header_program_init (PIO pio, uint sm, uint offset, float tick_rate, int bits_per_frame) {
+    pio_sm_config c = mitsubishi_heavy_ir_header_program_get_default_config(offset);
+    sm_config_set_out_shift (&c,
+                             true,       
+                             false,      
+                             bits_per_frame);
+
+    float div = clock_get_hz (clk_sys) / tick_rate;
+    sm_config_set_clkdiv (&c, div);
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}
