@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "mitsubishi_heavy.h"
 
 union MH_ir_encoded MH_ir_encode_ac_state(struct MH_ac_state ac_state) {
@@ -59,4 +61,104 @@ union MH_ir_encoded MH_ir_encode_ac_state(struct MH_ac_state ac_state) {
     }
 
     return encoded;
+}
+
+void MH_fan_str(struct MH_ac_state* ac_state, char* buff) {
+    switch (ac_state->fan_speed) {
+    case MH_fan_speed_auto:
+        sprintf(buff, "Auto");
+        break;
+    case MH_fan_speed_1:
+        sprintf(buff, "1");
+        break;
+    case MH_fan_speed_2:
+        sprintf(buff, "2");
+        break;
+    case MH_fan_speed_3:
+        sprintf(buff, "3");
+        break;
+    case MH_fan_speed_4:
+        sprintf(buff, "4");
+        break;
+    case MH_fan_speed_eco:
+        sprintf(buff, "ECO");
+        buff = "ECO";
+        break;
+    case MH_fan_speed_high:
+        sprintf(buff, "High");
+        break;
+    }
+}
+void MH_mode_str(struct MH_ac_state* ac_state, char* buff) {
+    if (ac_state->power == MH_power_off) {
+        sprintf(buff, "OFF");
+        return;
+    }
+    switch (ac_state->mode) {
+    case MH_mode_auto:
+        sprintf(buff, "Auto");
+        break;
+    case MH_mode_cooling:
+        sprintf(buff, "Cooling");
+        break;
+    case MH_mode_drying:
+        sprintf(buff, "Drying");
+        break;
+    case MH_mode_fan:
+        sprintf(buff, "Fan Only");
+        break;
+    case MH_mode_heating:
+        sprintf(buff, "Heating");
+        break;
+    }
+}
+
+inline void MH_temperature_str(struct MH_ac_state* ac_state, char* buff) {
+    sprintf(buff, "%d", ac_state->temperatre);
+}
+
+void MH_fan_change(struct MH_ac_state* ac_state, int direction) {
+    switch (ac_state->fan_speed) {
+    case MH_fan_speed_auto:
+    case MH_fan_speed_high:
+    case MH_fan_speed_eco:
+        if (direction < 0) { ac_state->fan_speed = MH_fan_speed_1; }
+        if (direction > 0) { ac_state->fan_speed = MH_fan_speed_1; }
+        break;
+    case MH_fan_speed_1:
+        if (direction < 0) { ac_state->fan_speed = MH_fan_speed_1; }
+        if (direction > 0) { ac_state->fan_speed = MH_fan_speed_2; }
+        break;
+    case MH_fan_speed_2:
+        if (direction < 0) { ac_state->fan_speed = MH_fan_speed_1; }
+        if (direction > 0) { ac_state->fan_speed = MH_fan_speed_3; }
+        break;
+    case MH_fan_speed_3:
+        if (direction < 0) { ac_state->fan_speed = MH_fan_speed_2; }
+        if (direction > 0) { ac_state->fan_speed = MH_fan_speed_4; }
+        break;
+    case MH_fan_speed_4:
+        if (direction < 0) { ac_state->fan_speed = MH_fan_speed_3; }
+        if (direction > 0) { ac_state->fan_speed = MH_fan_speed_4; }
+        break;
+    }
+}
+
+void MH_mode_change(struct MH_ac_state* ac_state, enum MH_mode mode) {
+    if (ac_state->power == MH_power_off) { ac_state->power = MH_power_on; }
+    ac_state->mode = mode;
+}
+
+void MH_power_toggle(struct MH_ac_state* ac_state) {
+    if (ac_state->power == MH_power_off) { ac_state->power = MH_power_on; }
+    else { ac_state->power = MH_power_off; }
+}
+
+void MH_temperature_change(struct MH_ac_state* ac_state, int direction) {
+    if (direction > 0) { ac_state->temperatre += 1; }
+    if (direction < 0) { ac_state->temperatre -= 1; }
+
+    if (ac_state->temperatre > MH_MAX_TEMP) { ac_state->temperatre = MH_MAX_TEMP; }
+    if (ac_state->temperatre < MH_MIN_TEMP) { ac_state->temperatre = MH_MIN_TEMP; }
+
 }

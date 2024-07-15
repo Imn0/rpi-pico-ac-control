@@ -4,177 +4,44 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>A/C Remote Control</title>
-        <style>
-            :root {
-                --primary-color: #2c3e50;
-                --secondary-color: #34495e;
-                --accent-color: #3498db;
-                --text-color: #ecf0f1;
-                --on-off-color: #2ecc71;
-            }
-
-            body {
-                font-family: Arial, sans-serif;
-                background-color: var(--primary-color);
-                color: var(--text-color);
-                box-sizing: border-box;
-                margin: 0px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100svh;
-            }
-
-            .remote {
-                background-color: var(--secondary-color);
-                border-radius: 20px;
-                padding: 20px;
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-                max-width: 300px;
-                width: 100%;
-            }
-
-            h1 {
-                text-align: center;
-                margin-bottom: 20px;
-                font-size: 24px;
-            }
-
-            .a-group {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-                margin-bottom: 10px;
-            }
-            a {
-                text-decoration: none !important;
-            }
-
-            .a {
-                background-color: var(--accent-color);
-                color: var(--text-color);
-                border: none;
-                padding: 15px 10px;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 14px;
-                transition: background-color 0.3s;
-                text-align: center;
-            }
-
-            .a:hover {
-                filter: brightness(90%);
-            }
-
-            .on-off {
-                background-color: var(--on-off-color);
-            }
-
-            .mode-as {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-                margin-bottom: 10px;
-            }
-
-            .temperature,
-            .fan-speed {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 10px;
-            }
-
-            .temperature-display,
-            .fan-speed-display {
-                font-size: 24px;
-                font-weight: bold;
-            }
-
-            .plus-minus {
-                font-size: 24px;
-                width: 60px;
-            }
-
-            .swivel-controls {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-                margin-bottom: 10px;
-            }
-
-            .swivel-lr {
-                grid-column: 1 / -1;
-                display: flex;
-            }
-
-            .swivel-lr .a {
-                flex: 1;
-                border-radius: 0;
-            }
-
-            .swivel-lr .a:first-child {
-                border-top-left-radius: 5px;
-                border-bottom-left-radius: 5px;
-            }
-
-            .swivel-lr .a:last-child {
-                border-top-right-radius: 5px;
-                border-bottom-right-radius: 5px;
-            }
-
-            .full-width {
-                grid-column: 1 / -1;
-                display: flex;
-                justify-content: space-between;
-            }
-
-            .full-width .a {
-                flex: 1;
-            }
-
-            .full-width .a:last-child {
-                margin-right: 0;
-            }
-
-            @media (max-width: 480px) {
-                .remote {
-                    font-weight: bolder;
-                    max-width: 100%;
-                    width: 100%;
-                    height: 100%;
-                    padding: 5px;
-                    padding-left: 45px;
-                    padding-right: 45px;
-                    border-radius: 0px;
-                    box-sizing: border-box;
+        <link rel="stylesheet" href="styles.css" />
+        <script type="text/javascript">
+            // Redirect to the base URL
+            window.onload = () => {
+                const protocol = window.location.protocol;
+                const host = window.location.host;
+                const baseUrl = protocol + "//" + host;
+                if (window.location.href !== baseUrl + "/") {
+                    window.location.href = baseUrl;
                 }
-            }
-        </style>
+            };
+        </script>
     </head>
     <body>
         <div class="remote">
             <h1>A/C Remote Control</h1>
             <h1>A/C Remote Control</h1>
-            <h1>A/C Remote Control</h1>
+            <h1><!--#Mode--></h1>
             <div class="mode-as">
                 <a class="a" href="/mode.cgi?mode=auto">Auto</a>
-                <a class="a" href="/mode.cgi?mode=auto">Cooling</a>
-                <a class="a on-off" href="/mode.cgi?mode=auto">On/Off</a>
-                <a class="a" href="/mode.cgi?mode=auto">Heating</a>
-                <a class="a" href="/mode.cgi?mode=auto">Fan Only</a>
-                <a class="a" href="/mode.cgi?mode=auto">Drying</a>
+                <a class="a" href="/mode.cgi?mode=cooling">Cooling</a>
+                <a class="a on-off" href="/mode.cgi?mode=power_toggle"
+                    >On/Off</a
+                >
+                <a class="a" href="/mode.cgi?mode=heating">Heating</a>
+                <a class="a" href="/mode.cgi?mode=fan_only">Fan Only</a>
+                <a class="a" href="/mode.cgi?mode=drying">Drying</a>
             </div>
 
             <div class="temperature">
-                <a class="a plus-minus">-</a>
-                <span class="temperature-display">22°C</span>
-                <a class="a plus-minus">+</a>
+                <a class="a plus-minus" href="/temp.cgi?temp=-1">-</a>
+                <span class="temperature-display"><!--#Temp-->°C</span>
+                <a class="a plus-minus" href="/temp.cgi?temp=1">+</a>
             </div>
             <div class="fan-speed">
-                <a class="a plus-minus">-</a>
-                <span class="fan-speed-display">Fan: Auto</span>
-                <a class="a plus-minus">+</a>
+                <a class="a plus-minus" href="/mode.cgi?fan=-1">-</a>
+                <span class="fan-speed-display"><!--#Fan--></span>
+                <a class="a plus-minus" href="/mode.cgi?fan=1">+</a>
             </div>
             <div class="a-group">
                 <a class="a">Eco/High</a>

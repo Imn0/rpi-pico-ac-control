@@ -12,34 +12,6 @@ if(WIN32)
     include(${pico-sdk-tools_DIR}/pico-sdk-tools-config-version.cmake)
 endif()
 # ====================================================================================
-# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
-if(WIN32)
-   set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(PICO_SDK_PATH ${USERHOME}/.pico-sdk/sdk/1.5.1)
-set(PICO_TOOLCHAIN_PATH ${USERHOME}/.pico-sdk/toolchain/13_2_Rel1)
-if(WIN32)
-    set(pico-sdk-tools_DIR ${USERHOME}/.pico-sdk/tools/1.5.1)
-    include(${pico-sdk-tools_DIR}/pico-sdk-tools-config.cmake)
-    include(${pico-sdk-tools_DIR}/pico-sdk-tools-config-version.cmake)
-endif()
-# ====================================================================================
-# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
-if(WIN32)
-   set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(PICO_SDK_PATH ${USERHOME}/.pico-sdk/sdk/1.5.1)
-set(PICO_TOOLCHAIN_PATH ${USERHOME}/.pico-sdk/toolchain/13_2_Rel1)
-if(WIN32)
-    set(pico-sdk-tools_DIR ${USERHOME}/.pico-sdk/tools/1.5.1)
-    include(${pico-sdk-tools_DIR}/pico-sdk-tools-config.cmake)
-    include(${pico-sdk-tools_DIR}/pico-sdk-tools-config-version.cmake)
-endif()
-# ====================================================================================
 cmake_minimum_required(VERSION 3.13)
 
 set(PROGRAM_NAME ac-control)
@@ -77,7 +49,7 @@ target_link_libraries(${PROGRAM_NAME}
     hardware_interp
 )
 
-target_compile_options(${PROGRAM_NAME} PRIVATE -Wall -Wextra  -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-but-set-variable)
+target_compile_options(${PROGRAM_NAME} PRIVATE -Wall -Wextra  -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-but-set-parameter)
 pico_enable_stdio_usb(${PROGRAM_NAME} FALSE)
 pico_enable_stdio_uart(${PROGRAM_NAME} TRUE)
 

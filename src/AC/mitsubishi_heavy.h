@@ -23,3 +23,13 @@ union MH_ir_encoded {
 };
 
 union MH_ir_encoded MH_ir_encode_ac_state(struct MH_ac_state ac_state);
+
+void MH_fan_str(struct MH_ac_state* ac_state, char* buff);
+void MH_fan_change(struct MH_ac_state* ac_state, int direction);
+
+void MH_mode_str(struct MH_ac_state* ac_state, char* buff);
+void MH_mode_change(struct MH_ac_state* ac_state, enum MH_mode mode);
+void MH_power_toggle(struct MH_ac_state* ac_state);
+
+void MH_temperature_str(struct MH_ac_state* ac_state, char* buff);
+void MH_temperature_change(struct MH_ac_state* ac_state, int direction);

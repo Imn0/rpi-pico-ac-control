@@ -2,15 +2,19 @@
 // configuration for RLA502A700B / RLA502A700L / RLA502A704
 // bytes and decoding from https://github.com/ToniA/Raw-IR-decoder-for-Arduino
 
+#define MH_MAX_TEMP 34
+#define MH_MIN_TEMP 17
+
+
 /**
  * @brief bytes[5] & 0x07
  */
 enum MH_mode {
     MH_mode_auto = 0x07,
-    MH_mode_cool = 0x06,
-    MH_mode_dry = 0x05,
+    MH_mode_cooling = 0x06,
+    MH_mode_drying = 0x05,
     MH_mode_fan = 0x04,
-    MH_mode_heat = 0x03,
+    MH_mode_heating = 0x03,
 };
 
 /**

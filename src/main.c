@@ -37,9 +37,8 @@ int main() {
     gpio_set_irq_enabled_with_callback(15, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback_reboot);
     irq_set_enabled(PIO0_IRQ_0, true);
 
+    IR_init(IR_LED_PIN);
     wifi_init_and_connect();
-    frontend_init();
-
     struct MH_ac_state ac = {
                             .power = MH_power_on,
                             .temperatre = 22,
@@ -52,11 +51,11 @@ int main() {
                             .silent_mode = MH_silent_mode_off,
                             .clean_alergen = MH_clean_alergen_off,
     };
+    frontend_init(&ac);
 
 
-    IR_init(IR_LED_PIN);
+
     while (true) {
-        IR_send(MH_ir_encode_ac_state(ac));
         sleep_ms(3000);
     }
 

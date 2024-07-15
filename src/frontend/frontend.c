@@ -5,31 +5,47 @@
 #include "pico/cyw43_arch.h"
 
 #include "frontend.h"
+#include "IR/ir_send.h"
+#include "AC/mitsubishi_heavy.h"
+#include "../lwipopts.h"
 
-void frontend_init() {
+struct MH_ac_state* ac_state;
+
+void frontend_init(struct MH_ac_state* _ac_state) {
+    ac_state = _ac_state;
     httpd_init();
-    printf("Http server initialised\n");
+    printf("Http server initialised.\n");
     ssi_init();
-    printf("SSI Handler initialised\n");
+    printf("SSI Handler initialised.\n");
     cgi_init();
-    printf("CGI Handler initialised\n");
+    printf("CGI Handler initialised.\n");
 }
 
 
-const char* ssi_tags[] = { "led" };
+const char* ssi_tags[] = { "Fan", "Mode", "Temp" };
 
 u16_t ssi_handler(int iIndex, char* pcInsert, int iInsertLen) {
+
     size_t printed;
+
+    char buff[128] = "\0";
     switch (iIndex) {
     case 0:
     {
-        bool led_status = cyw43_arch_gpio_get(CYW43_WL_GPIO_LED_PIN);
-        if (led_status == true) {
-            printed = snprintf(pcInsert, iInsertLen, "ON");
-        }
-        else {
-            printed = snprintf(pcInsert, iInsertLen, "OFF");
-        }
+        MH_fan_str(ac_state, buff);
+        printed = snprintf(pcInsert, iInsertLen, "%s", buff);
+    }
+    break;
+    case 1:
+    {
+        MH_mode_str(ac_state, buff);
+        printed = snprintf(pcInsert, iInsertLen, "%s", buff);
+    }
+    break;
+    case 2:
+    {
+        MH_temperature_str(ac_state, buff);
+        printed = snprintf(pcInsert, iInsertLen, "%s", buff);
     }
     break;
     default:
@@ -41,29 +57,59 @@ u16_t ssi_handler(int iIndex, char* pcInsert, int iInsertLen) {
 }
 
 void ssi_init() {
-    adc_init();
-    adc_set_temp_sensor_enabled(true);
-    adc_select_input(4);
-
     http_set_ssi_handler(ssi_handler, ssi_tags, LWIP_ARRAYSIZE(ssi_tags));
 }
 
-const char* cgi_led_handler(int iIndex, int iNumParams, char* pcParam[], char* pcValue[]) {
-    if (strcmp(pcParam[0], "temp") == 0) {
-        if (strcmp(pcValue[0], "0") == 0)
-            cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
-        else if (strcmp(pcValue[0], "1") == 0)
-            cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
+const char* cgi_mode_handler(int iIndex, int iNumParams, char* pcParam[], char* pcValue[]) {
+    for (int i = 0; i < iNumParams; i++) {
+        if (strcmp(pcParam[i], "mode") == 0) {
+            if (strcmp(pcValue[i], "auto") == 0)
+                MH_mode_change(ac_state, MH_mode_auto);
+            else if (strcmp(pcValue[i], "cooling") == 0)
+                MH_mode_change(ac_state, MH_mode_cooling);
+            else if (strcmp(pcValue[i], "heating") == 0)
+                MH_mode_change(ac_state, MH_mode_heating);
+            else if (strcmp(pcValue[i], "fan_only") == 0)
+                MH_mode_change(ac_state, MH_mode_fan);
+            else if (strcmp(pcValue[i], "drying") == 0)
+                MH_mode_change(ac_state, MH_mode_drying);
+            else if (strcmp(pcValue[i], "power_toggle") == 0)
+                MH_power_toggle(ac_state);
+        }
+        else if (strcmp(pcParam[i], "fan") == 0) {
+            if (strcmp(pcValue[i], "-1") == 0)
+                MH_fan_change(ac_state, -1);
+            else if (strcmp(pcValue[i], "1") == 0)
+                MH_fan_change(ac_state, 1);
+
+        }
     }
+    IR_send(MH_ir_encode_ac_state(*ac_state));
+    return "/index.shtml";
+}
+
+const char* cgi_temp_handler(int iIndex, int iNumParams, char* pcParam[], char* pcValue[]) {
+
+    for (int i = 0; i < iNumParams; i++) {
+        if (strcmp(pcParam[i], "temp") == 0) {
+            if (strcmp(pcValue[i], "-1") == 0)
+                MH_temperature_change(ac_state, -1);
+            else if (strcmp(pcValue[i], "1") == 0)
+                MH_temperature_change(ac_state, 1);
+        }
+    }
+    IR_send(MH_ir_encode_ac_state(*ac_state));
     return "/index.shtml";
 }
 
 static const tCGI cgi_handlers[] = {
     {
-        "/temp.cgi", cgi_led_handler
+        "/mode.cgi", cgi_mode_handler
+    },{
+        "/temp.cgi", cgi_temp_handler
     },
 };
 
 void cgi_init() {
-    http_set_cgi_handlers(cgi_handlers, 1);
+    http_set_cgi_handlers(cgi_handlers, 2);
 }
