@@ -1,0 +1,49 @@
+mqtt:
+  - climate:
+    name: <NAME>
+    #power
+    power_command_topic: "<NAME>/ac/power/set"
+    
+    #preset 
+    preset_modes:
+    - "eco"
+    - "sleep"
+    - "silent"
+    - "auto"
+    preset_mode_command_topic: "<NAME>/ac/preset_mode/set"
+    
+    #mode dont change these
+    modes:
+    - "auto"
+    - "off"
+    - "cool"
+    - "heat"
+    - "dry"
+    - "fan_only"
+    mode_command_topic: "<NAME>/ac/mode/set"
+    mode_state_topic: "<NAME>/ac/mode/state"
+    mode_state_template: "{{ value_json }}"
+    
+    #temperature 
+    temperature_state_topic: "<NAME>/ac/temperature/state"
+    temperature_command_topic: "<NAME>/ac/temperature/set"
+    current_temperature_template: "{{ value_json }}"
+    precision: 1.0
+    max_temp: 34
+    min_temp: 17
+
+    #fan 
+    fan_modes:
+      - "auto"
+      - "low" # 1
+      - "medium" # 3
+      - "high" # high
+    fan_mode_command_topic: "<NAME>/ac/fan/set"
+    fan_mode_state_topic: "<NAME>/ac/fan/state"
+    fan_mode_state_template: "{{ value_json }}"
+    
+    #swing
+    swing_modes:
+    - "on"
+    - "off"
+    swing_mode_command_topic: "<NAME>/ac/swing/set"

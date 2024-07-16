@@ -129,7 +129,36 @@ a {
 .full-width .a:last-child {
     margin-right: 0;
 }
+.split-button {
+    display: flex;
+    width: 100%;
+}
 
+.split-button .a {
+    flex: 1;
+    padding: 15px 5px;
+}
+
+.split-left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.split-right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.bottom-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.small-button {
+    font-size: 12px;
+    padding: 8px 15px;
+}
 @media (max-width: 480px) {
     .remote {
         font-weight: bolder;

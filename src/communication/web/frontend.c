@@ -5,13 +5,12 @@
 #include "pico/cyw43_arch.h"
 
 #include "frontend.h"
-#include "IR/ir_send.h"
-#include "AC/mitsubishi_heavy.h"
-#include "../lwipopts.h"
+#include "ac_control/mitsubishi_heavy.h"
+#include "lwipopts.h"
 
-struct MH_ac_state* ac_state;
+static struct MH_ac_state* ac_state;
 
-void frontend_init(struct MH_ac_state* _ac_state) {
+int frontend_init(struct MH_ac_state* _ac_state) {
     ac_state = _ac_state;
     httpd_init();
     printf("Http server initialised.\n");
@@ -19,6 +18,7 @@ void frontend_init(struct MH_ac_state* _ac_state) {
     printf("SSI Handler initialised.\n");
     cgi_init();
     printf("CGI Handler initialised.\n");
+    return 0;
 }
 
 
@@ -64,27 +64,27 @@ const char* cgi_mode_handler(int iIndex, int iNumParams, char* pcParam[], char* 
     for (int i = 0; i < iNumParams; i++) {
         if (strcmp(pcParam[i], "mode") == 0) {
             if (strcmp(pcValue[i], "auto") == 0)
-                MH_mode_change(ac_state, MH_mode_auto);
+                MH_mode_set(ac_state, MH_mode_auto);
             else if (strcmp(pcValue[i], "cooling") == 0)
-                MH_mode_change(ac_state, MH_mode_cooling);
+                MH_mode_set(ac_state, MH_mode_cooling);
             else if (strcmp(pcValue[i], "heating") == 0)
-                MH_mode_change(ac_state, MH_mode_heating);
+                MH_mode_set(ac_state, MH_mode_heating);
             else if (strcmp(pcValue[i], "fan_only") == 0)
-                MH_mode_change(ac_state, MH_mode_fan);
+                MH_mode_set(ac_state, MH_mode_fan);
             else if (strcmp(pcValue[i], "drying") == 0)
-                MH_mode_change(ac_state, MH_mode_drying);
+                MH_mode_set(ac_state, MH_mode_drying);
             else if (strcmp(pcValue[i], "power_toggle") == 0)
                 MH_power_toggle(ac_state);
         }
         else if (strcmp(pcParam[i], "fan") == 0) {
             if (strcmp(pcValue[i], "-1") == 0)
-                MH_fan_change(ac_state, -1);
+                MH_fan_cycle(ac_state, -1);
             else if (strcmp(pcValue[i], "1") == 0)
-                MH_fan_change(ac_state, 1);
+                MH_fan_cycle(ac_state, 1);
 
         }
     }
-    IR_send(MH_ir_encode_ac_state(*ac_state));
+    MH_send(ac_state);
     return "/index.shtml";
 }
 
@@ -93,12 +93,12 @@ const char* cgi_temp_handler(int iIndex, int iNumParams, char* pcParam[], char* 
     for (int i = 0; i < iNumParams; i++) {
         if (strcmp(pcParam[i], "temp") == 0) {
             if (strcmp(pcValue[i], "-1") == 0)
-                MH_temperature_change(ac_state, -1);
+                MH_temperature_change_delta(ac_state, -1);
             else if (strcmp(pcValue[i], "1") == 0)
-                MH_temperature_change(ac_state, 1);
+                MH_temperature_change_delta(ac_state, 1);
         }
     }
-    IR_send(MH_ir_encode_ac_state(*ac_state));
+    MH_send(ac_state);
     return "/index.shtml";
 }
 

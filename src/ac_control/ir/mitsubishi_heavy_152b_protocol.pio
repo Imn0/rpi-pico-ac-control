@@ -1,0 +1,103 @@
+.program mitsubishi_heavy_ir_header
+.define BURST_IRQ 7                     
+.define DATA_IRQ 6                     
+.define START_IRQ 5                     
+.define NUM_INITIAL_BURSTS 10           
+
+.wrap_target
+    wait 1 irq START_IRQ
+    set X, (NUM_INITIAL_BURSTS - 1)     
+long_burst:
+    irq BURST_IRQ
+    jmp X-- long_burst
+    nop [9]
+    irq DATA_IRQ 
+.wrap     
+
+
+.program mitsubishi_heavy_ir_data
+.define BURST_IRQ 7                     ; the IRQ used to trigger a carrier burst
+.define DATA_IRQ 6                      ; the IRQ used to trigger data transmision
+
+.wrap_target
+    mov Y, ISR              ; counter is stored in ISR
+    wait 1 irq DATA_IRQ            
+    
+data_bit:
+    out X, 1                            
+    irq BURST_IRQ                       
+    nop [2]
+    jmp !X burst                        
+    nop [7]                                 
+burst:
+jmp Y-- data_bit                      
+irq BURST_IRQ
+out X, 8
+.wrap   
+
+
+.program mitsubishi_heavy_ir_burst
+.define NUM_CYCLES 15                   ; how many carrier cycles to generate
+.define BURST_IRQ 7                  ; which IRQ should trigger a carrier burst
+.define public TICKS_PER_LOOP 62     ; the number of instructions in the loop (for timing)
+
+.wrap_target
+    set X, (NUM_CYCLES - 1)         
+    wait 1 irq BURST_IRQ            
+cycle_loop:
+    set pins, 1 [31]                 
+    set pins, 0 [30]                  
+    jmp X--, cycle_loop            
+.wrap
+
+
+% c-sdk {
+static inline void mitsubishi_heavy_ir_header_program_init (PIO pio, uint sm, uint offset, float tick_rate, int bits_per_frame) {
+    pio_sm_config c = mitsubishi_heavy_ir_header_program_get_default_config(offset);
+    sm_config_set_out_shift (&c,
+                             true,       
+                             false,      
+                             bits_per_frame);
+
+    float div = clock_get_hz (clk_sys) / tick_rate;
+    sm_config_set_clkdiv (&c, div);
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+
+static inline void mitsubishi_heavy_ir_data_program_init (PIO pio, uint sm, uint offset, float tick_rate, int bits_per_frame) {
+
+    pio_sm_config c = mitsubishi_heavy_ir_data_program_get_default_config(offset);
+
+    sm_config_set_out_shift (&c,
+                             true,       // shift right
+                             true,      // enable autopull
+                             bits_per_frame);
+
+
+    sm_config_set_fifo_join (&c, PIO_FIFO_JOIN_TX);
+
+    float div = clock_get_hz (clk_sys) / tick_rate;
+    sm_config_set_clkdiv (&c, div);
+
+    pio_sm_init(pio, sm, offset, &c);
+
+    // set up the counter
+    //
+    pio_sm_put_blocking(pio, sm, 151);
+    pio_sm_exec_wait_blocking(pio, sm, pio_encode_out(pio_isr, 32));
+    pio_sm_set_enabled(pio, sm, true);
+}
+
+static inline void mitsubishi_heavy_ir_burst_program_init(PIO pio, uint sm, uint offset, uint pin, float freq) {
+    
+    pio_sm_config c = mitsubishi_heavy_ir_burst_program_get_default_config (offset);
+    sm_config_set_set_pins (&c, pin, 1);
+    pio_gpio_init (pio, pin);
+    pio_sm_set_consecutive_pindirs (pio, sm, pin, 1, true);
+    float div = (float) clock_get_hz(clk_sys) / (freq * mitsubishi_heavy_ir_burst_TICKS_PER_LOOP);
+    sm_config_set_clkdiv (&c, div);
+    pio_sm_init (pio, sm, offset, &c);
+    pio_sm_set_enabled (pio, sm, true);
+}
+%}

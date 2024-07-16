@@ -44,9 +44,15 @@
                 <a class="a plus-minus" href="/mode.cgi?fan=1">+</a>
             </div>
             <div class="a-group">
-                <a class="a">Eco/High</a>
-                <a class="a">Night Mode</a>
-                <a class="a">Silent</a>
+                <div class="split-button">
+                    <a class="a split-left">Eco</a>
+                    <a class="a split-right">High</a>
+                </div>
+                <a class="a">Auto</a>
+                <div class="split-button">
+                    <a class="a split-left">Night</a>
+                    <a class="a split-right">Silent</a>
+                </div>
             </div>
 
             <div class="a-group full-width">
@@ -59,9 +65,9 @@
                     <a class="a">Left/Right</a>
                 </div>
             </div>
-            <div class="a-group">
-                <a class="a">Clean</a>
-                <a class="a">Allergen</a>
+            <div class="bottom-controls">
+                <a class="a small-button">Clean</a>
+                <a class="a small-button">Allergen</a>
             </div>
         </div>
     </body>

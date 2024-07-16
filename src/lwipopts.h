@@ -1,4 +1,3 @@
-// apparently needed...
 // from: https://github.com/raspberrypi/pico-examples/blob/01e8128953a9766608be0a9254afb7900107e222/pico_w/lwipopts_examples_common.h
 // allow override in some examples
 #ifndef NO_SYS
@@ -15,7 +14,7 @@
 #define MEM_LIBC_MALLOC             0
 #endif
 #define MEM_ALIGNMENT               4
-#define MEM_SIZE                    4000
+#define MEM_SIZE                    20480
 #define MEMP_NUM_TCP_SEG            32
 #define MEMP_NUM_ARP_QUEUE          10
 #define PBUF_POOL_SIZE              24
@@ -53,6 +52,10 @@
 #define LWIP_STATS_DISPLAY          1
 #endif
 
+
+#define MQTT_OUTPUT_RINGBUF_SIZE 2048
+#define MEMP_NUM_SYS_TIMEOUT 20
+#define LWIP_MQTT 1
 #define LWIP_HTTPD 1
 #define LWIP_HTTPD_SSI 1
 #define LWIP_HTTPD_CGI 1

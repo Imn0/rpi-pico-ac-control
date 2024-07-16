@@ -9,7 +9,8 @@ import binascii
 files = list()
 os.chdir('./src')
 output = open('fsdata.dat', 'w')
-os.chdir('./frontend') 
+os.chdir('./communication') 
+os.chdir('./web') 
 os.chdir('./html') 
 for(dirpath, dirnames, filenames) in os.walk('.'):
     files += [os.path.join(dirpath, file) for file in filenames]
@@ -23,7 +24,6 @@ for file in files:
         header = "HTTP/1.0 404 File not found\r\n"
     else:
         header = "HTTP/1.0 200 OK\r\n"
-
     if '.html' in file:
         header += "Content-type: text/html\r\n"
     elif '.shtml' in file:

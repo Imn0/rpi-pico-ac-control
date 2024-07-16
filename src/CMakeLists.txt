@@ -1,1 +1,1 @@
-add_subdirectory(IR)
+add_subdirectory(ac_control/ir)

@@ -28,9 +28,8 @@ set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
 file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.c" "${SRC_DIR}/*.h")
 add_executable(ac-control  ${SRC_FILES} )
 
-# pico_generate_pio_header(ac-control ${CMAKE_CURRENT_LIST_DIR}/src/mitsubishi_heavy_receive/mitsubishi_heavy_receive.pio)
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/secrets/wifi.pass)
-    include(secrets/wifi.pass)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/secrets/secrets.pass)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/secrets/secrets.pass)
 else()
     message(WARNING "no wifi credentials")
 endif()
@@ -43,7 +42,9 @@ target_include_directories(${PROGRAM_NAME} PRIVATE
 target_link_libraries(${PROGRAM_NAME}
     pico_cyw43_arch_lwip_threadsafe_background
     pico_lwip_http
+    pico_lwip_mqtt
     pico_stdlib
+    pico_multicore
     hardware_adc
     hardware_pio
     hardware_interp

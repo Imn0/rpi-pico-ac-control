@@ -1,12 +1,11 @@
+#if IR_PIO_ENABLED
+
 #include "hardware/pio.h"
 #include "mitsubishi_heavy_ir.h"
 #include "hardware/clocks.h"
 #include <stdio.h>
 
-#include "mitsubishi_heavy_ir_header.pio.h"
-#include "mitsubishi_heavy_ir_burst.pio.h"
-#include "mitsubishi_heavy_ir_data.pio.h"
-
+#include "mitsubishi_heavy_152b_protocol.pio.h"
 
 int mitsubishi_heavy_ir_heavy_init(PIO pio, uint pin_idx) {
     uint mitsubishi_heavy_ir_header_offset;
@@ -16,6 +15,7 @@ int mitsubishi_heavy_ir_heavy_init(PIO pio, uint pin_idx) {
     else return -1;
 
     int header_offset_sm = pio_claim_unused_sm(pio, true);
+    if (header_offset_sm == -1) return -1;
     mitsubishi_heavy_ir_header_program_init(pio,
                                             header_offset_sm,
                                             mitsubishi_heavy_ir_header_offset,
@@ -29,6 +29,7 @@ int mitsubishi_heavy_ir_heavy_init(PIO pio, uint pin_idx) {
     else return -1;
 
     int burst_offset_sm = pio_claim_unused_sm(pio, true);
+    if (burst_offset_sm == -1) return -1;
     mitsubishi_heavy_ir_burst_program_init(pio,
                                            burst_offset_sm,
                                            burst_offset,
@@ -46,16 +47,17 @@ int mitsubishi_heavy_ir_data_init(PIO pio) {
     }
     else return -1;
 
-    int itsubishi_heavy_ir_data_sm = pio_claim_unused_sm(pio, true);
-    if (itsubishi_heavy_ir_data_sm == -1) {
+    int mitsubishi_heavy_ir_data_sm = pio_claim_unused_sm(pio, true);
+    if (mitsubishi_heavy_ir_data_sm == -1) {
         return -1;
     }
 
     mitsubishi_heavy_ir_data_program_init(pio,
-                                          itsubishi_heavy_ir_data_sm,
+                                          mitsubishi_heavy_ir_data_sm,
                                           itsubishi_heavy_ir_data_offset,
                                           2 * (1 / 225e-6f),
                                           32);
 
-    return itsubishi_heavy_ir_data_sm;
+    return mitsubishi_heavy_ir_data_sm;
 }
+#endif
