@@ -28,11 +28,18 @@ int main() {
     }
 
     int err;
-
     err = wifi_init_and_connect();
     if (err) {
         return 1;
     }
+
+    if (IR_LED_PIN != 15) {
+        gpio_init(15);
+        gpio_set_dir(15, GPIO_IN);
+        gpio_set_irq_enabled_with_callback(15, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback_reboot);
+        irq_set_enabled(PIO0_IRQ_0, true);
+    }
+
     struct MH_ac_state ac;
     err = MH_init(IR_LED_PIN, &ac);
     if (err) {
