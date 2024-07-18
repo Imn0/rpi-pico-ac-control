@@ -32,6 +32,6 @@ Raspberry pi pico program for controlling Mitsubishi Heavy A/C[^1] with a websit
 | Temperature Change | ✅  | ✅             |
 | Mode Change        | ✅  | ✅             |
 | Basic Fan Modes    | ✅  | ✅             |
-| Advanced Fan Modes | ❌  | ❌             |
-| Sleep and Silent   | ❌  | ❌             |
+| Advanced Fan Modes | ✅  | ❌             |
+| Sleep and Silent   | ✅  | ❌             |
 | Presets            | ❌  | ❌             |

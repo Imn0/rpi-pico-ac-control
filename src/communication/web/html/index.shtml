@@ -5,23 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>A/C Remote Control</title>
         <link rel="stylesheet" href="styles.css" />
-        <script type="text/javascript">
-            // Redirect to the base URL
-            window.onload = () => {
-                const protocol = window.location.protocol;
-                const host = window.location.host;
-                const baseUrl = protocol + "//" + host;
-                if (window.location.href !== baseUrl + "/") {
-                    window.location.href = baseUrl;
-                }
-            };
-        </script>
     </head>
     <body>
         <div class="remote">
-            <h1>A/C Remote Control</h1>
-            <h1>A/C Remote Control</h1>
+            <h1><!--#V_Swing-->&nbsp;<!--#H_Swing--></h1>
             <h1><!--#Mode--></h1>
+            <h1><!--#Other-->&nbsp;</h1>
             <div class="mode-as">
                 <a class="a" href="/mode.cgi?mode=auto">Auto</a>
                 <a class="a" href="/mode.cgi?mode=cooling">Cooling</a>
@@ -45,29 +34,26 @@
             </div>
             <div class="a-group">
                 <div class="split-button">
-                    <a class="a split-left">Eco</a>
-                    <a class="a split-right">High</a>
+                    <a class="a split-left" href="/mode.cgi?fan=eco">Eco</a>
+                    <a class="a split-right" href="/mode.cgi?fan=high">High</a>
                 </div>
-                <a class="a">Auto</a>
+                <a class="a" href="/mode.cgi?fan=auto">Auto</a>
                 <div class="split-button">
-                    <a class="a split-left">Night</a>
-                    <a class="a split-right">Silent</a>
+                    <a class="a split-left" href="/mode.cgi?ex_mode=night">Night</a>
+                    <a class="a split-right" href="/mode.cgi?ex_mode=silent">Silent</a>
                 </div>
             </div>
-
             <div class="a-group full-width">
-                <a class="a">Up/Down</a>
-                <a class="a">3D Auto</a>
+                <a class="a" href="/swing.cgi?swing=ud">Up/Down</a>
+                <a class="a" href="/mode.cgi?ex_mode=3d_auto">3D Auto</a>
             </div>
             <div class="swivel-controls">
-                <div class="swivel-lr">
-                    <a class="a">Left/Right</a>
-                    <a class="a">Left/Right</a>
-                </div>
+                <a class="a" href="/swing.cgi?swing=lr">Left/Right</a>
+                <a class="a" href="/swing.cgi?swing=stop">Stop Swing</a>
             </div>
             <div class="bottom-controls">
-                <a class="a small-button">Clean</a>
-                <a class="a small-button">Allergen</a>
+                <a class="a small-button" href="/mode.cgi?ex_mode=clean">Clean</a>
+                <a class="a small-button" href="/mode.cgi?ex_mode=allergen">Allergen</a>
             </div>
         </div>
     </body>

@@ -109,6 +109,6 @@ typedef atomic_uint atomic_MH_silent_mode;
 enum MH_clean_alergen {
     MH_clean_alergen_clean = 0x00,
     MH_clean_alergen_alergen = 0x20,
-    MH_clean_alergen_off = 0x60
+    MH_clean_allergen_off = 0x60
 };
 typedef atomic_uint atomic_MH_clean_alergen;

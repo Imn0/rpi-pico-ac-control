@@ -53,11 +53,11 @@ void MH_fan_cycle(volatile struct MH_ac_state* ac_state, int direction);
 void MH_fan_set(volatile struct MH_ac_state* ac_state, enum MH_fan_speed fan);
 
 void MH_vertical_air_str(struct MH_ac_state* ac_state, char* buff);
-void MH_vertical_air_cycle(volatile struct MH_ac_state* ac_state, int direction);
+void MH_vertical_air_cycle(volatile struct MH_ac_state* ac_state);
 void MH_vertical_air_set(volatile struct MH_ac_state* ac_state, enum MH_vertical_air vertical_air);
 
 void MH_horizontal_air_str(struct MH_ac_state* ac_state, char* buff);
-void MH_horizontal_air_cycle(volatile struct MH_ac_state* ac_state, int direction);
+void MH_horizontal_air_cycle(volatile struct MH_ac_state* ac_state);
 void MH_horizontal_air_set(volatile struct MH_ac_state* ac_state, enum MH_horizontal_air horizontal_air);
 
 void MH_3d_auto_str(struct MH_ac_state* ac_state, char* buff);
@@ -73,5 +73,7 @@ void MH_silent_mode_toggle(volatile struct MH_ac_state* ac_state);
 void MH_silent_mode_set(volatile struct MH_ac_state* ac_state, enum MH_silent_mode silent_mode);
 
 void MH_clean_alergen_str(struct MH_ac_state* ac_state, char* buff);
-void MH_clean_alergen_toggle(volatile struct MH_ac_state* ac_state);
+void MH_clean_allergen_toggle(volatile struct MH_ac_state* ac_state, enum MH_clean_alergen clean_alergen);
 void MH_clean_alergen_set(volatile struct MH_ac_state* ac_state, enum MH_clean_alergen clean_alergen);
+
+void MH_other_str(struct MH_ac_state* ac_state, char* buff);

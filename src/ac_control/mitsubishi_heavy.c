@@ -80,7 +80,7 @@ int MH_init(int pin, struct MH_ac_state* ac_state) {
                                     .auto_3d_mode = MH_3d_auto_off,
                                     .night_setback = MH_night_setback_off,
                                     .silent_mode = MH_silent_mode_off,
-                                    .clean_alergen = MH_clean_alergen_off,
+                                    .clean_alergen = MH_clean_allergen_off,
     };
     return 0;
 }
@@ -212,4 +212,246 @@ inline void MH_temperature_change_delta(volatile struct MH_ac_state* ac_state, i
     if (current_temperature > MH_MAX_TEMP) { current_temperature = MH_MAX_TEMP; }
     if (current_temperature < MH_MIN_TEMP) { current_temperature = MH_MIN_TEMP; }
     atomic_store(&ac_state->temperature, current_temperature);
+}
+
+
+void MH_vertical_air_str(struct MH_ac_state* ac_state, char* buff) {
+    enum MH_vertical_air vertical_air = atomic_load(&ac_state->vertical_air);
+    switch (vertical_air) {
+    case MH_vertical_air_down:
+        sprintf(buff, "Down");
+        break;
+    case MH_vertical_air_middle_down:
+        sprintf(buff, "Middle Down");
+        break;
+    case MH_vertical_air_middle:
+        sprintf(buff, "Middle");
+        break;
+    case MH_vertical_air_middle_up:
+        sprintf(buff, "MIiddle Up");
+        break;
+    case MH_vertical_air_up:
+        sprintf(buff, "Up");
+        break;
+    case MH_vertical_air_swing:
+        sprintf(buff, "Swing");
+        break;
+    case MH_vertical_air_stop:
+        buff[0] = '\0';
+        break;
+    }
+}
+
+void MH_vertical_air_cycle(volatile struct MH_ac_state* ac_state) {
+    enum MH_vertical_air current_vertical_air = atomic_load(&ac_state->vertical_air);
+    switch (current_vertical_air) {
+    case MH_vertical_air_stop:
+        current_vertical_air = MH_vertical_air_swing;
+        break;
+    case MH_vertical_air_swing:
+        current_vertical_air = MH_vertical_air_down;
+        break;
+    case MH_vertical_air_down:
+        current_vertical_air = MH_vertical_air_middle_down;
+        break;
+    case MH_vertical_air_middle_down:
+        current_vertical_air = MH_vertical_air_middle;
+        break;
+    case MH_vertical_air_middle:
+        current_vertical_air = MH_vertical_air_middle_up;
+        break;
+    case MH_vertical_air_middle_up:
+        current_vertical_air = MH_vertical_air_up;
+        break;
+    case MH_vertical_air_up:
+        current_vertical_air = MH_vertical_air_stop;
+        break;
+    }
+    atomic_store(&ac_state->vertical_air, current_vertical_air);
+}
+
+void MH_vertical_air_set(volatile struct MH_ac_state* ac_state, enum MH_vertical_air vertical_air) {
+    atomic_store(&ac_state->vertical_air, vertical_air);
+}
+
+void MH_horizontal_air_str(struct MH_ac_state* ac_state, char* buff) {
+    enum MH_horizontal_air horizontal_air = atomic_load(&ac_state->horizontal_air);
+    switch (horizontal_air) {
+    case MH_horizontal_air_swing:
+        sprintf(buff, "Auto");
+        break;
+    case MH_horizontal_air_left:
+        sprintf(buff, "Left");
+        break;
+    case MH_horizontal_air_middle_left:
+        sprintf(buff, "Middle Left");
+        break;
+    case MH_horizontal_air_middle:
+        sprintf(buff, "Middle");
+        break;
+    case MH_horizontal_air_middle_right:
+        sprintf(buff, "Middle Right");
+        break;
+    case MH_horizontal_air_right:
+        sprintf(buff, "Right");
+        break;
+    case MH_horizontal_air_stop:
+        buff[0] = '\0';
+        break;
+    case MH_horizontal_air_left_right:
+        sprintf(buff, "Left Right");
+        break;
+    case MH_horizontal_air_right_left:
+        sprintf(buff, "Right Left");
+        break;
+    }
+
+}
+
+void MH_horizontal_air_cycle(volatile struct MH_ac_state* ac_state) {
+    enum MH_horizontal_air current_horizontal_air = atomic_load(&ac_state->horizontal_air);
+    switch (current_horizontal_air) {
+    case MH_horizontal_air_stop:
+        current_horizontal_air = MH_horizontal_air_swing;
+        break;
+    case MH_horizontal_air_swing:
+        current_horizontal_air = MH_horizontal_air_left;
+        break;
+    case MH_horizontal_air_left:
+        current_horizontal_air = MH_horizontal_air_right;
+        break;
+    case MH_horizontal_air_right:
+        current_horizontal_air = MH_horizontal_air_middle;
+        break;
+    case MH_horizontal_air_middle:
+        current_horizontal_air = MH_horizontal_air_middle_left;
+        break;
+    case MH_horizontal_air_middle_left:
+        current_horizontal_air = MH_horizontal_air_middle_right;
+        break;
+    case MH_horizontal_air_middle_right:
+        current_horizontal_air = MH_horizontal_air_left_right;
+        break;
+    case MH_horizontal_air_left_right:
+        current_horizontal_air = MH_horizontal_air_right_left;
+        break;
+    case MH_horizontal_air_right_left:
+        current_horizontal_air = MH_horizontal_air_stop;
+        break;
+
+    }
+    atomic_store(&ac_state->horizontal_air, current_horizontal_air);
+}
+
+void MH_horizontal_air_set(volatile struct MH_ac_state* ac_state, enum MH_horizontal_air horizontal_air) {
+    atomic_store(&ac_state->horizontal_air, horizontal_air);
+}
+
+void MH_3d_auto_str(struct MH_ac_state* ac_state, char* buff) {
+    enum MH_3d_auto _3d_auto = atomic_load(&ac_state->auto_3d_mode);
+    switch (_3d_auto) {
+    case MH_3d_auto_off:
+        sprintf(buff, "Off");
+        break;
+    case MH_3d_auto_on:
+        sprintf(buff, "On");
+        break;
+    }
+
+}
+void MH_3d_auto_toggle(volatile struct MH_ac_state* ac_state) {
+    enum MH_3d_auto _3d_auto = atomic_load(&ac_state->auto_3d_mode);
+    if (_3d_auto == MH_3d_auto_off) { _3d_auto = MH_3d_auto_on; }
+    else { _3d_auto = MH_3d_auto_off; }
+    atomic_store(&ac_state->auto_3d_mode, _3d_auto);
+
+}
+void MH_3d_auto_set(volatile struct MH_ac_state* ac_state, enum MH_3d_auto _3d_auto) {
+    atomic_store(&ac_state->auto_3d_mode, _3d_auto);
+}
+
+void MH_night_setback_str(struct MH_ac_state* ac_state, char* buff) {
+    enum MH_night_setback night_setback = atomic_load(&ac_state->night_setback);
+    switch (night_setback) {
+    case MH_night_setback_off:
+        sprintf(buff, "Off");
+        break;
+    case MH_night_setback_on:
+        sprintf(buff, "On");
+        break;
+    }
+
+}
+void MH_night_setback_toggle(volatile struct MH_ac_state* ac_state) {
+    enum MH_night_setback night_setback = atomic_load(&ac_state->night_setback);
+    if (night_setback == MH_night_setback_off) { night_setback = MH_night_setback_on; }
+    else { night_setback = MH_night_setback_off; }
+    atomic_store(&ac_state->night_setback, night_setback);
+
+}
+void MH_night_setback_set(volatile struct MH_ac_state* ac_state, enum MH_night_setback night_setback) {
+    atomic_store(&ac_state->night_setback, night_setback);
+}
+
+void MH_silent_mode_str(struct MH_ac_state* ac_state, char* buff) {
+    enum MH_silent_mode silent_mode = atomic_load(&ac_state->silent_mode);
+    switch (silent_mode) {
+    case MH_silent_mode_off:
+        sprintf(buff, "Off");
+        break;
+    case MH_silent_mode_on:
+        sprintf(buff, "On");
+        break;
+    }
+}
+void MH_silent_mode_toggle(volatile struct MH_ac_state* ac_state) {
+    enum MH_silent_mode silent_mode = atomic_load(&ac_state->silent_mode);
+    if (silent_mode == MH_silent_mode_off) { silent_mode = MH_silent_mode_on; }
+    else { silent_mode = MH_silent_mode_off; }
+    atomic_store(&ac_state->silent_mode, silent_mode);
+
+}
+void MH_silent_mode_set(volatile struct MH_ac_state* ac_state, enum MH_silent_mode silent_mode) {
+    atomic_store(&ac_state->silent_mode, silent_mode);
+}
+
+void MH_clean_alergen_str(struct MH_ac_state* ac_state, char* buff) {
+    enum MH_clean_alergen clean_alergen = atomic_load(&ac_state->clean_alergen);
+    switch (clean_alergen) {
+    case MH_clean_alergen_clean:
+        sprintf(buff, "Clean");
+        break;
+    case MH_clean_alergen_alergen:
+        sprintf(buff, "Alergen");
+        break;
+    case MH_clean_allergen_off:
+        sprintf(buff, "Off");
+        break;
+    }
+}
+void MH_clean_allergen_toggle(volatile struct MH_ac_state* ac_state, enum MH_clean_alergen clean_alergen) {
+    enum MH_clean_alergen current_clean_alergen = atomic_load(&ac_state->clean_alergen);
+
+    if (current_clean_alergen == MH_clean_allergen_off) {
+        atomic_store(&ac_state->clean_alergen, clean_alergen);
+        return;
+    }
+    else if (current_clean_alergen == clean_alergen) {
+        atomic_store(&ac_state->clean_alergen, MH_clean_allergen_off);
+        return;
+    }
+
+}
+void MH_clean_alergen_set(volatile struct MH_ac_state* ac_state, enum MH_clean_alergen clean_alergen) {
+    atomic_store(&ac_state->clean_alergen, clean_alergen);
+}
+
+void MH_other_str(struct MH_ac_state* ac_state, char* buff) {
+    enum MH_3d_auto _3d_auto = atomic_load(&ac_state->auto_3d_mode);
+    enum MH_night_setback night_setback = atomic_load(&ac_state->night_setback);
+    enum MH_silent_mode silent_mode = atomic_load(&ac_state->silent_mode);
+    enum MH_clean_alergen clean_alergen = atomic_load(&ac_state->clean_alergen);
+
+
+    sprintf(buff, "%s %s %s %s", _3d_auto == MH_3d_auto_on ? "3D auto" : "", night_setback == MH_night_setback_on ? "Night" : "", silent_mode == MH_silent_mode_on ? "Silent" : "", clean_alergen == MH_clean_alergen_clean ? "Clean" : clean_alergen == MH_clean_alergen_alergen ? "Alergen" : "");
 }
