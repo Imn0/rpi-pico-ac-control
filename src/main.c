@@ -5,15 +5,20 @@
 #include "hardware/interp.h"
 #include "hardware/watchdog.h"
 #include "hardware/clocks.h"
+#include "pico/runtime.h"
 #include "hardware/pio.h"
 #include "hardware/dma.h"
 #include "hardware/irq.h"
+#include "lwip/timeouts.h"
+#include "pico/util/datetime.h"
+#include "lwip/debug.h"
 
 #include "communication/web/frontend.h"
 #include "communication/mqtt/mqtt.h"
 #include "networking/wifi.h"
 #include "ac_control/mitsubishi_heavy.h"
 
+struct MH_ac_state ac;
 
 static void gpio_callback_reboot() {
     printf("REBOOTING\n");
@@ -40,7 +45,6 @@ int main() {
         irq_set_enabled(PIO0_IRQ_0, true);
     }
 
-    struct MH_ac_state ac;
     err = MH_init(IR_LED_PIN, &ac);
     if (err) {
         return 1;
@@ -62,9 +66,11 @@ int main() {
         cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
         sleep_ms(300);
     }
-
+    bool led = true;
     while (true) {
-        sleep_ms(5000);
+        led = !led;
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, led);
+        sleep_ms(2000);
 #if MQTT_ENABLED
         mqtt_update_send();
 #endif

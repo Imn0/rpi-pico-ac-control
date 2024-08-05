@@ -67,6 +67,7 @@ void ssi_init() {
 }
 
 const char* cgi_mode_handler(int iIndex, int iNumParams, char* pcParam[], char* pcValue[]) {
+    (void)iIndex;
     for (int i = 0; i < iNumParams; i++) {
         if (strcmp(pcParam[i], "mode") == 0) {
             if (strcmp(pcValue[i], "auto") == 0)
@@ -112,6 +113,7 @@ const char* cgi_mode_handler(int iIndex, int iNumParams, char* pcParam[], char* 
 }
 
 const char* cgi_temp_handler(int iIndex, int iNumParams, char* pcParam[], char* pcValue[]) {
+    (void)iIndex;
 
     for (int i = 0; i < iNumParams; i++) {
         if (strcmp(pcParam[i], "temp") == 0) {
@@ -126,6 +128,8 @@ const char* cgi_temp_handler(int iIndex, int iNumParams, char* pcParam[], char* 
 }
 
 const char* cgi_swing_handler(int iIndex, int iNumParams, char* pcParam[], char* pcValue[]) {
+    (void)iIndex;
+
     for (int i = 0; i < iNumParams; i++) {
         if (strcmp(pcParam[i], "swing") == 0) {
             if (strcmp(pcValue[i], "ud") == 0)

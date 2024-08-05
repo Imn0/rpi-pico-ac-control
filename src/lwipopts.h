@@ -15,9 +15,9 @@
 #endif
 #define MEM_ALIGNMENT               4
 #define MEM_SIZE                    20480
-#define MEMP_NUM_TCP_SEG            32
+#define MEMP_NUM_TCP_SEG            64
 #define MEMP_NUM_ARP_QUEUE          10
-#define PBUF_POOL_SIZE              24
+#define PBUF_POOL_SIZE              48
 #define LWIP_ARP                    1
 #define LWIP_ETHERNET               1
 #define LWIP_ICMP                   1
@@ -50,12 +50,22 @@
 #define LWIP_DEBUG                  1
 #define LWIP_STATS                  1
 #define LWIP_STATS_DISPLAY          1
+#define LWIP_DBG_MIN_LEVEL          LWIP_DBG_LEVEL_ALL
+#define LWIP_DBG_TYPES_ON           LWIP_DBG_ON
+#define HTTPD_DEBUG                 LWIP_DBG_ON
+#define MEM_DEBUG                   LWIP_DBG_ON
+#define TCP_DEBUG                   LWIP_DBG_ON
+#define DHCP_DEBUG                  LWIP_DBG_ON
 #endif
 
 
 #define MQTT_OUTPUT_RINGBUF_SIZE 2048
 #define MEMP_NUM_SYS_TIMEOUT 20
+
+#if MQTT_ENABLED
 #define LWIP_MQTT 1
+#endif
+
 #define LWIP_HTTPD 1
 #define LWIP_HTTPD_SSI 1
 #define LWIP_HTTPD_CGI 1

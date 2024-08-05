@@ -39,7 +39,7 @@ target_include_directories(${PROGRAM_NAME} PRIVATE
     ${SRC_DIR}
 )
 
-target_link_libraries(${PROGRAM_NAME}
+target_link_libraries(${PROGRAM_NAME} PRIVATE
     pico_cyw43_arch_lwip_threadsafe_background
     pico_lwip_http
     pico_lwip_mqtt
@@ -50,7 +50,7 @@ target_link_libraries(${PROGRAM_NAME}
     hardware_interp
 )
 
-target_compile_options(${PROGRAM_NAME} PRIVATE -Wall -Wextra  -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-but-set-parameter)
+target_compile_options(${PROGRAM_NAME} PRIVATE -Wall -Wextra -Werror -O3)
 pico_enable_stdio_usb(${PROGRAM_NAME} FALSE)
 pico_enable_stdio_uart(${PROGRAM_NAME} TRUE)
 

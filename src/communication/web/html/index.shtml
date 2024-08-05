@@ -5,6 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>A/C Remote Control</title>
         <link rel="stylesheet" href="styles.css" />
+        <script type="text/javascript">
+            // Redirect to the base URL
+            window.onload = () => {
+                const protocol = window.location.protocol;
+                const host = window.location.host;
+                const baseUrl = protocol + "//" + host;
+                if (window.location.href !== baseUrl + "/") {
+                    window.location.href = baseUrl;
+                }
+            };
+        </script>
     </head>
     <body>
         <div class="remote">
@@ -39,8 +50,12 @@
                 </div>
                 <a class="a" href="/mode.cgi?fan=auto">Auto</a>
                 <div class="split-button">
-                    <a class="a split-left" href="/mode.cgi?ex_mode=night">Night</a>
-                    <a class="a split-right" href="/mode.cgi?ex_mode=silent">Silent</a>
+                    <a class="a split-left" href="/mode.cgi?ex_mode=night"
+                        >Night</a
+                    >
+                    <a class="a split-right" href="/mode.cgi?ex_mode=silent"
+                        >Silent</a
+                    >
                 </div>
             </div>
             <div class="a-group full-width">
@@ -52,8 +67,12 @@
                 <a class="a" href="/swing.cgi?swing=stop">Stop Swing</a>
             </div>
             <div class="bottom-controls">
-                <a class="a small-button" href="/mode.cgi?ex_mode=clean">Clean</a>
-                <a class="a small-button" href="/mode.cgi?ex_mode=allergen">Allergen</a>
+                <a class="a small-button" href="/mode.cgi?ex_mode=clean"
+                    >Clean</a
+                >
+                <a class="a small-button" href="/mode.cgi?ex_mode=allergen"
+                    >Allergen</a
+                >
             </div>
         </div>
     </body>
