@@ -12,7 +12,7 @@ Raspberry pi pico program for controlling Mitsubishi Heavy A/C[^1] with a websit
 | _Item_                 | _Quantity_ | Details                                                                  |
 | ---------------------- | ---------- | ------------------------------------------------------------------------ |
 | Raspberry Pi Pico W    | 1          | https://www.raspberrypi.com/products/raspberry-pi-pico/                  |
-| Infra-Red LED          | 1          | dismantle few old remotes one of those should work                       |
+| 940nm Infra-Red LED          | 1          | dgeneric part                        |
 | 1000 ohm 1/4W resistor | 1          | generic part                                                             |
 | 37 ohm 1W resistor     | 1          | Please calcualte this value yourself, it depends on what IR LED you have |
 | npm transistor         | 1          | I used 2N3904                                                            |
