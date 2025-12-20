@@ -7,6 +7,17 @@
 #include "lwipopts.h"
 #include "mqtt.h"
 
+
+static const char* subscribe_topics[] = {
+    POWER_SET_TOPIC,
+    MODE_SET_TOPIC,
+    TEMPERATURE_SET_TOPIC,
+    FAN_SET_TOPIC,
+};
+
+#define NUM_SUBSCRIBE_TOPICS (sizeof(subscribe_topics) / sizeof(subscribe_topics[0]))
+
+
 static mqtt_client_t* mqtt_client;
 
 static struct mqtt_callback_data callback_data;
@@ -14,6 +25,7 @@ static struct MH_ac_state* ac_state;
 
 static void mqtt_incoming_publish_cb(void* arg, const char* topic, u32_t tot_len) {
     printf("AOFH\n");
+    (void ) tot_len;
     struct mqtt_callback_data* data = (struct mqtt_callback_data*)arg;
     strncpy(data->topic, topic, sizeof(data->topic) - 1);
     data->topic[sizeof(data->topic) - 1] = '\0';  // Ensure null-termination
@@ -21,6 +33,7 @@ static void mqtt_incoming_publish_cb(void* arg, const char* topic, u32_t tot_len
 
 static void mqtt_incoming_data_cb(void* arg, const u8_t* data, u16_t len, u8_t flags) {
     struct mqtt_callback_data* cb_data = (struct mqtt_callback_data*)arg;
+    (void) flags;
     printf("Message content: %.*s\n", len, (char*)data);
     printf("Message is from topic: %s\n", cb_data->topic);
 
@@ -76,10 +89,12 @@ static void mqtt_incoming_data_cb(void* arg, const u8_t* data, u16_t len, u8_t f
 
 static void mqtt_sub_request_cb(void* arg, err_t result) {
     printf("Subscribe result: %d\n", result);
+    (void) arg;
 }
 
 static void mqtt_pub_request_cb(void* arg, err_t result) {
     printf("Publish result: %d\n", result);
+    (void) arg;
 }
 
 static void mqtt_connection_cb(mqtt_client_t* client, void* arg, mqtt_connection_status_t status) {
