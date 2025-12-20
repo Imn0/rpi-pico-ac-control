@@ -61,7 +61,7 @@ set(output_html_fsdata "${CMAKE_CURRENT_BINARY_DIR}/src/fsdata.dat")
 add_custom_command(
     OUTPUT ${output_html_fsdata}
     COMMAND
-    py ./html_fsdata.py
+    python ./html_fsdata.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )
 
